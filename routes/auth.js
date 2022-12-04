@@ -10,11 +10,16 @@ authRouter.post('/api/signup', async (req, res) => {
   try {
     const { name, email, username, password } = req.body;
     
-    const existingUser = await User.findOne({ email });
-      if (existingUser) {
-        return res.status(400).json({ msg: 'Email telah terdaftar' });
-      }
-      
+    const existingUserEmail = await User.findOne({ email });
+    if (existingUserEmail) {
+       return res.status(400).json({ msg: 'Email telah terdaftar' });
+    }
+
+    const existingUserUsername = await User.findOne({ username });
+    if (existingUserUsername) {
+      return res.status(400).json({msg: 'Username telah terdaftar'});
+    }
+
     const hashedPassword = await bcryptjs.hash(password, 8);
     let user = new User({
       name,
@@ -46,7 +51,7 @@ authRouter.post('/api/signin', async (req, res) => {
       return res.status(400).json({msg: 'Password yang Anda masukkan salah'});
     }
 
-    const token = jwt.sign({id: user._id}, 'passwordKeyChangedLater');
+    const token = jwt.sign({id: user._id}, "TOKEN_SECRET");
     res.json({
       token, ...user._doc
     });
@@ -60,7 +65,7 @@ authRouter.post('/api/tokenIsValid', async (req, res) => {
   try{
    const token = req.header('x-auth-token');
    if (!token) return res.json(false);
-   const verified = jwt.verify(token, 'passwordKeyChangedLater');
+   const verified = jwt.verify(token, "TOKEN_SECRET");
    if (!verified) return res.json(false);
 
   //  CHECK IF USER EXIST OR NOT
