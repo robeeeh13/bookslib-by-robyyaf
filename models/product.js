@@ -10,6 +10,13 @@ const productSchema = mongoose.Schema({
         required: true,
         type: String,
         trim: true,
+        validate: {
+            validator: (value) => {
+                const re = /^[A-Za-z\s]*$/;
+                return value.match(re);
+            },
+            message: 'Nama penulis harus huruf alphabet'
+        }
     },
     publisher: {
         required: true,
@@ -20,6 +27,13 @@ const productSchema = mongoose.Schema({
         required: true,
         type: String,
         trim: true,
+        validate: {
+            validator: (value) => {
+                const re = /^[0-9]*$/;
+                return value.match(re);
+            },
+            message: 'Tahun terbit harus angka'
+        }
     },
     description: {
         required: true,
@@ -29,14 +43,34 @@ const productSchema = mongoose.Schema({
     price: { 
         required: true,
         type: Number,
+        validate: {
+            validator: (value) => {
+                return value > 0;
+            },
+            message: 'Harga harus lebih dari 0'
+        }
     },
     quantity: {
         required: true,
         type: Number,
+        validate: {
+            validator: (value) => {
+                return value > 0;
+            },
+            message: 'Jumlah buku harus lebih dari 0'
+        }
     },
     genre: {
         required: true,
         type: String,
+        trim: true,
+        validate: {
+            validator: (value) => {
+                const re =/\s+|,\s+g/;
+                return value.match(re);
+            },
+            message: 'Masukkan genre yang sesuai'
+        }
     },
     category: {
         required: true,

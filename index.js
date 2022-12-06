@@ -5,6 +5,7 @@ const adminRouter = require('./routes/admin');
 
 // IMPORT FROM OTHER FILES
 const authRouter = require('./routes/auth');
+const productRouter = require('./routes/product');
 
 // INIT
 const app = express();
@@ -15,6 +16,7 @@ const DB = 'mongodb+srv://robyfajar:uasppkroby@cluster0.sc4e1qt.mongodb.net/?ret
 app.use(express.json());
 app.use(authRouter);
 app.use(adminRouter);
+app.use(productRouter);
 
 // CONNECTIONS
 mongoose.connect(DB).then(() => {
