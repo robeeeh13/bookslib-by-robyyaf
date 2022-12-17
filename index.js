@@ -10,7 +10,7 @@ const userRouter = require('./routes/user');
 
 // INIT
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const DB = 'mongodb+srv://robyfajar:uasppkroby@cluster0.sc4e1qt.mongodb.net/?retryWrites=true&w=majority';
 
 // MIDDLEWARE
