@@ -11,6 +11,10 @@ const orderSchema = mongoose.Schema({
             },
         },
     ],
+    receiver: {
+        type: String,
+        required: true,
+    },
     totalPrice: {
         type: Number,
         required: true,
