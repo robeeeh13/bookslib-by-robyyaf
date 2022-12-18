@@ -80,6 +80,12 @@ userRouter.post('/api/save-user-fullname', auth, async(req, res) => {
     try {
         const {name} = req.body;
         let user = await User.findById(req.user);
+
+        // CHECK IF USER ENTERED NAME SAME AS BEFORE
+        if (user.name == name) {
+            return res.status(400).json({msg: 'Nama lengkap tidak boleh sama dengan nama lengkap sebelumnya'});
+        }
+        
         user.name = name;
         user = await user.save();
         res.json(user);
