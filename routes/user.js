@@ -4,6 +4,7 @@ const auth = require('../middlewares/auth');
 const Order = require('../models/order');
 const { Product } = require('../models/product');
 const User = require('../models/user');
+const bcryptjs = require('bcryptjs');
 
 // ADD TO CART
 userRouter.post('/api/add-to-cart', auth, async(req, res) => {
@@ -66,12 +67,57 @@ userRouter.post('/api/save-user-address', auth, async(req, res) => {
     try {
         const {address} = req.body;
         let user = await User.findById(req.user);
-        // // TEST AJA NTI DI APUS 
-        // user.name = 'nanda x roby';
         user.address = address;
         user = await user.save();
         res.json(user);
     } catch (e) {
+        res.status(500).json({error: e.message});
+    }
+});
+
+// CHANGE USER REAL NAME
+userRouter.post('/api/save-user-fullname', auth, async(req, res) => {
+    try {
+        const {name} = req.body;
+        let user = await User.findById(req.user);
+        user.name = name;
+        user = await user.save();
+        res.json(user);
+    } catch (e) {
+        res.status(500).json({error: e.message});
+    }
+});
+
+// CHANGE USER PASSWORD
+userRouter.post('/api/change-user-password', auth, async(req, res) => {
+    try {
+        const {oldPassword, password} = req.body;
+        let user = await User.findById(req.user);
+
+        // CHECK OLD PASSWORD
+        const isMatch = await bcryptjs.compare(oldPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({msg: 'Password lama yang Anda masukkan salah'});
+        }
+
+        // IF SAME PASSWORD ENTERED
+        const samepassword = await bcryptjs.compare(password, user.password);
+        if (samepassword) {
+            return res.status(400).json({msg: 'Password baru tidak boleh sama dengan password lama'});
+        }
+
+        // CHECK PASSWORD LENGTH
+        if (password.length < 6) { 
+            return res.status(400).json({msg: 'Password harus lebih dari 6 karakter'});
+        }
+
+        // HASH PASSWORD
+        const hashedPassword = await bcryptjs.hash(password, 8);
+        user.password = hashedPassword;
+
+        user = await user.save();
+        res.json(user);
+    } catch {
         res.status(500).json({error: e.message});
     }
 });
