@@ -107,8 +107,8 @@ userRouter.post('/api/change-user-password', auth, async(req, res) => {
         }
 
         // IF SAME PASSWORD ENTERED
-        const samepassword = await bcryptjs.compare(password, user.password);
-        if (samepassword) {
+        const samePassword = await bcryptjs.compare(password, user.password);
+        if (samePassword) {
             return res.status(400).json({msg: 'Password baru tidak boleh sama dengan password lama'});
         }
 
